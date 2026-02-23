@@ -1,7 +1,7 @@
 /**
  * Copyright Cougar Studios 2026
  * Noel Parivarthan Saraf
- * Java llm 0.1 beta
+ * Java llm 0.1 alpha
  */
 import java.util.*;
 public class CougarAI
