@@ -1,69 +1,53 @@
 import java.io.*;
 import java.util.Scanner;
+import org.jsoup.Jsoup;
+import com.google.genai.Client; // Ensure you have the Gemini SDK JAR
 
-public class JavaChatbot {
+public class AIChatBot {
     private static final String FILE_PATH = "logs.txt";
+    private static final String API_KEY = "YOUR_GEMINI_API_KEY"; // Replace this!
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Chatbot: Hello! Ask me anything (type 'exit' to quit).");
+        System.out.println("AI Online. Commands: 'read [url]' or just ask a question.");
 
         while (true) {
-            System.out.print("You: ");
-            String userInput = scanner.nextLine().trim().toLowerCase();
+            System.out.print("\nYou: ");
+            String input = scanner.nextLine().trim();
+            if (input.equalsIgnoreCase("exit")) break;
 
-            if (userInput.equalsIgnoreCase("exit")) break;
-
-            String answer = findAnswer(userInput);
-
-            if (answer != null) {
-                System.out.println("Chatbot: " + answer);
+            if (input.startsWith("read ")) {
+                // Feature: Read a website
+                String url = input.substring(5);
+                System.out.println("Reading " + url + "...");
+                String webContent = scrapeWebsite(url);
+                String aiResponse = askAI("Summarize this: " + webContent);
+                System.out.println("AI Summary: " + aiResponse);
             } else {
-                System.out.println("Chatbot: I don't know that one. What is the answer?");
-                System.out.print("You (providing answer): ");
-                String newAnswer = scanner.nextLine().trim();
-                saveKnowledge(userInput, newAnswer);
-                System.out.println("Chatbot: Thanks! I've learned something new.");
+                // Feature: Normal Chat
+                String aiResponse = askAI(input);
+                System.out.println("AI: " + aiResponse);
             }
         }
         scanner.close();
     }
 
-    /**
-     * Performs a linear search through the file to find the matching question.
-     */
-    private static String findAnswer(String question) {
-    try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            // Split the line into Question and Answer parts using "; A: " as the divider
-            String[] parts = line.split("; A: ");
-            
-            if (parts.length == 2) {
-                String storedQuestion = parts[0].replace("Q: ", "").trim();
-                String storedAnswer = parts[1].replace(";", "").trim();
-
-                // Check for an exact match (ignoring case)
-                if (storedQuestion.equalsIgnoreCase(question)) {
-                    return storedAnswer;
-                }
-            }
+    public static String scrapeWebsite(String url) {
+        try {
+            return Jsoup.connect(url).get().text().substring(0, 2000); // Limit text for AI
+        } catch (Exception e) {
+            return "Error reading site: " + e.getMessage();
         }
-    } catch (IOException e) {
-        return null;
     }
-    return null;
-}
 
-    /**
-     * Appends the new Q&A pair to the logs.txt file.
-     */
-    private static void saveKnowledge(String question, String answer) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write("Q: " + question + "; A: " + answer + ";");
-            writer.newLine();
-        } catch (IOException e) {
-            System.out.println("Error saving to file: " + e.getMessage());
+    public static String askAI(String prompt) {
+        try {
+            Client client = new Client();
+            // In a real setup, you'd use: client.setApiKey(API_KEY);
+            var response = client.models.generateContent("gemini-1.5-flash", prompt, null);
+            return response.text();
+        } catch (Exception e) {
+            return "AI Error: Check your API key or connection.";
         }
     }
 }
