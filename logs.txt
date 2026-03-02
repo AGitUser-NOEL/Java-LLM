@@ -3,6 +3,6 @@ Q: what is your name; A: I am your custom Java Chatbot.;
 Q: how are you; A: I'm just a collection of bytes, but I'm feeling optimized!;
 Q: who created you; A: You did, using the power of Java!;
 Q: what is java; A: A high-level, class-based, object-oriented programming language.;
-Q: help; A: I can answer questions stored in my memory. If I don't know something, teach me!;Q: hi; A: hello im here to answer;
-Q: hi; A: hi im here to help;
+Q: help; A: I can answer questions stored in my memory. If I don't know something, teach me!;
+Q: hi; A: hello im here to answer;
 Q: help; A: you can store answer in the log.txt file;
