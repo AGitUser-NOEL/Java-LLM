@@ -1,52 +1,69 @@
-/**
- * Copyright Cougar Studios 2026
- * Noel Parivarthan Saraf
- * Java llm 0.1 alpha
- */
-import java.util.*;
-public class CougarAI
-{
-    public static void main(String ar[])
-    {
-        int k=0;
-        int i=0;
-        boolean temp;
-        Scanner sc = new Scanner(System.in);
-        String st1="";
-        String st2="";
-        String store[][]=new String[1000][2];
-        for(i=0;i<1000;i++)
-        {
-            store[i][0]="";
-            store[i][1]="";
+import java.io.*;
+import java.util.Scanner;
+
+public class JavaChatbot {
+    private static final String FILE_PATH = "logs.txt";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Chatbot: Hello! Ask me anything (type 'exit' to quit).");
+
+        while (true) {
+            System.out.print("You: ");
+            String userInput = scanner.nextLine().trim().toLowerCase();
+
+            if (userInput.equalsIgnoreCase("exit")) break;
+
+            String answer = findAnswer(userInput);
+
+            if (answer != null) {
+                System.out.println("Chatbot: " + answer);
+            } else {
+                System.out.println("Chatbot: I don't know that one. What is the answer?");
+                System.out.print("You (providing answer): ");
+                String newAnswer = scanner.nextLine().trim();
+                saveKnowledge(userInput, newAnswer);
+                System.out.println("Chatbot: Thanks! I've learned something new.");
+            }
         }
-        for(i=0;i<1000;i++)
-        {
-            int j;
-            int z;
-            System.out.print("Enter Input:");
-            st1 =sc.nextLine();
-            boolean x =false;
-            for(z =0; z<10;z++)
-            {
-                if(st1.equals(store[z][0]))
-                {
-                    x=true;
-                    break;
+        scanner.close();
+    }
+
+    /**
+     * Performs a linear search through the file to find the matching question.
+     */
+    private static String findAnswer(String question) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            // Split the line into Question and Answer parts using "; A: " as the divider
+            String[] parts = line.split("; A: ");
+            
+            if (parts.length == 2) {
+                String storedQuestion = parts[0].replace("Q: ", "").trim();
+                String storedAnswer = parts[1].replace(";", "").trim();
+
+                // Check for an exact match (ignoring case)
+                if (storedQuestion.equalsIgnoreCase(question)) {
+                    return storedAnswer;
                 }
             }
-            if(x)
-            {
-                System.out.println("Answer:"+store[z][1]);
-            }
-            else
-            {
-                store[k][0]=st1;
-                System.out.println("Enter Answer");
-                st2=sc.nextLine();
-                store[k][1]=st2;
-                k++;
-            }
+        }
+    } catch (IOException e) {
+        return null;
+    }
+    return null;
+}
+
+    /**
+     * Appends the new Q&A pair to the logs.txt file.
+     */
+    private static void saveKnowledge(String question, String answer) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+            writer.write("Q: " + question + "; A: " + answer + ";");
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Error saving to file: " + e.getMessage());
         }
     }
 }
