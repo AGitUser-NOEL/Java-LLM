@@ -11,4 +11,4 @@ maintaining this project. I've left it here for anyone who wants to:
 * Improve the search algorithm.
 
 Feel free to fork this repo and make it your own!
-*PLEASE MAINTAIN AND SAFEGUARD THE PURPOSE OF THIS REPRISATORY AND DO NO SUE ME OR ANYBODY ELSE WHO HAS WORKED FOR THIS PROJECT*
+#*PLEASE MAINTAIN AND SAFEGUARD THE PURPOSE OF THIS REPRISATORY AND DO NO SUE ME OR ANYBODY ELSE WHO HAS WORKED FOR THIS PROJECT*
